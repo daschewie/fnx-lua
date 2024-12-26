@@ -42,7 +42,7 @@ LINK_CFG = a2560k.scm
 MODEL = --code-model=large --data-model=small
 LIB_MODEL = lc-sd
 EXE_NAME = lua
-CC_FLAGS = -DLUA_COMPAT_5_3
+CC_FLAGS = -DLUA_COMPAT_5_3 -DLUA_USE_C89
 
 # Object files
 OBJS = $(ASM_SRCS:%.s=obj/%.o) $(C_SRCS:%.c=obj/%.o)
