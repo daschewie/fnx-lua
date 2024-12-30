@@ -42,7 +42,6 @@ LINK_CFG = a2560k.scm
 MODEL = --code-model=large --data-model=small
 LIB_MODEL = lc-sd
 EXE_NAME = lua
-CC_FLAGS = -DLUA_COMPAT_5_3 -DLUA_USE_C89
 
 # Object files
 OBJS = $(ASM_SRCS:%.s=obj/%.o) $(C_SRCS:%.c=obj/%.o)
@@ -52,15 +51,15 @@ obj/%.o: %.s
 	as68k --core=68000 $(MODEL) --target=Foenix --debug --list-file=$(@:%.o=%.lst) -o $@ $<
 
 obj/%.o: %.c $(DEPDIR)/%.d | $(DEPDIR)
-	@cc68k $(CC_FLAGS) --core=68000 $(MODEL) --target=Foenix --debug --dependencies -MQ$@ >$(DEPDIR)/$*.d $<
-	cc68k $(CC_FLAGS) --core=68000 $(MODEL) --target=Foenix --debug --list-file=$(@:%.o=%.lst) -o $@ $<
+	@cc68k --core=68000 $(MODEL) --target=Foenix --debug --dependencies -MQ$@ >$(DEPDIR)/$*.d $<
+	cc68k --core=68000 $(MODEL) --target=Foenix --debug --list-file=$(@:%.o=%.lst) -o $@ $<
 
 obj/%-debug.o: %.s
 	as68k --core=68000 $(MODEL) --debug --list-file=$(@:%.o=%.lst) -o $@ $<
 
 obj/%-debug.o: %.c $(DEPDIR)/%-debug.d | $(DEPDIR)
-	@cc68k $(CC_FLAGS) --target=Foenix -core=68000 $(MODEL) --debug --dependencies -MQ$@ >$(DEPDIR)/$*-debug.d $<
-	cc68k $(CC_FLAGS) --target=Foenix --core=68000 $(MODEL) --debug --list-file=$(@:%.o=%.lst) -o $@ $<
+	@cc68k --target=Foenix -core=68000 $(MODEL) --debug --dependencies -MQ$@ >$(DEPDIR)/$*-debug.d $<
+	cc68k --target=Foenix --core=68000 $(MODEL) --debug --list-file=$(@:%.o=%.lst) -o $@ $<
 
 $(EXE_NAME).elf: $(OBJS_DEBUG)
 	ln68k --debug -o $@ $^ $(LINK_CFG)  --list-file=$(EXE_NAME)-debug.lst --cross-reference  --semi-hosted --target=Foenix --rtattr cstartup=Foenix_user --rtattr stubs=foenix --stack-size=2000 --sstack-size=800
